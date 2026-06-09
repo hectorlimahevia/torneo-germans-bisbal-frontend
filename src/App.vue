@@ -3,11 +3,11 @@
     <h1>Torneo UES</h1>
 
     <nav class="app-nav">
-      <RouterLink to="/">Inicio</RouterLink>
-      <RouterLink to="/standings">Clasificación</RouterLink>
-      <RouterLink to="/matches">Partidos</RouterLink>
-      <RouterLink to="/teams">Equipos</RouterLink>
-      <RouterLink to="/rules">Reglas</RouterLink>
+      <RouterLink to="/">Home</RouterLink>
+      <RouterLink to="/standings">Classification</RouterLink>
+      <RouterLink to="/matches">Matches</RouterLink>
+      <RouterLink to="/teams">Teams</RouterLink>
+      <RouterLink to="/rules">Rules</RouterLink>
       <RouterLink to="/login">Login</RouterLink>
       <RouterLink to="/ai">IA</RouterLink>
     </nav>

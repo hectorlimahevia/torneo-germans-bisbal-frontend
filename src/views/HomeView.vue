@@ -8,10 +8,10 @@
     </p>
 
     <div class="links">
-      <RouterLink to="/standings">Ver clasificación</RouterLink>
-      <RouterLink to="/matches">Ver partidos</RouterLink>
-      <RouterLink to="/teams">Ver equipos</RouterLink>
-      <RouterLink to="/ai">Preguntar a la IA</RouterLink>
+      <RouterLink to="/standings">See classification</RouterLink>
+      <RouterLink to="/matches">See matches</RouterLink>
+      <RouterLink to="/teams">See teams</RouterLink>
+      <RouterLink to="/ai">Ask the AI</RouterLink>
     </div>
   </section>
 </template>

@@ -1,12 +1,13 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import CategoryTabs from '../components/CategoryTabs.vue'
-import api from '../api/api'
+import CategoryTabs from '@/components/CategoryTabs.vue'
+import { CATEGORIES } from '@/constants/categories.js'
+import api from '@/api/api'
 
 const teams = ref([])
 const error = ref('')
-const categories = ['SUB6', 'SUB8', 'SUB10', 'SUB12']
 const selectedCategory = ref('SUB6')
+const categories = CATEGORIES
 
 const filteredTeams = computed(() => {
   return teams.value.filter((team) => team.category === selectedCategory.value)
@@ -84,5 +85,4 @@ section {
   margin: 4px 0;
   color: var(--text-secondary);
 }
-
 </style>

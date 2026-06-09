@@ -43,7 +43,7 @@ onMounted(loadStandings)
   <p v-if="error">
     {{ error }}
   </p>
-
+<div class="table-container">
   <table v-if="standings.length">
   <thead>
     <tr>
@@ -77,6 +77,35 @@ onMounted(loadStandings)
   </tr>
 </tbody>
 </table>
+</div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  margin-top: 2em;
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+  background: white;
+}
+
+th,
+td {
+  padding: 5px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+th {
+  background: #f0f0f0;
+}
+
+td:nth-child(2),
+th:nth-child(2) {
+  text-align: left;
+}
+</style>

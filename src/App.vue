@@ -21,7 +21,7 @@
 <style scoped>
 .app-header {
   padding: 16px;
-  background: #123c69;
+  background: var(--primary);
   color: white;
 }
 
@@ -44,6 +44,8 @@
 
 .app-main {
   padding: 16px;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
 /* Tablet / escritorio */

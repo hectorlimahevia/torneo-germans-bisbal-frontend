@@ -1,0 +1,24 @@
+:root {
+  --primary: #123c69;
+  --primary-light: #1d5a96;
+  --background: #f5f7fa;
+  --card: #ffffff;
+
+  --text-primary: #1a1a1a;
+  --text-secondary: #666666;
+
+  --border: #e0e0e0;
+  --radius: 14px;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--text-primary);
+  font-family: Inter, system-ui, sans-serif;
+}

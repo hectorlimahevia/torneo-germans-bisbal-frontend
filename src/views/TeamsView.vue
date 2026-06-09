@@ -1,18 +1,25 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
+import CategoryTabs from '../components/CategoryTabs.vue'
 import api from '../api/api'
 
 const teams = ref([])
 const error = ref('')
+const categories = ['SUB6', 'SUB8', 'SUB10', 'SUB12']
+const selectedCategory = ref('SUB6')
+
+const filteredTeams = computed(() => {
+  return teams.value.filter((team) => team.category === selectedCategory.value)
+})
 
 async function loadTeams() {
   try {
     const response = await api.get('/api/teams')
     teams.value = response.data
   } catch (err) {
-  console.error(err)
-  error.value = 'No se pudieron cargar los equipos'
-}
+    console.error(err)
+    error.value = 'No se pudieron cargar los equipos'
+  }
 }
 
 onMounted(loadTeams)
@@ -22,12 +29,22 @@ onMounted(loadTeams)
   <section>
     <h2>Equipos</h2>
 
+    <CategoryTabs
+      :categories="categories"
+      :selected-category="selectedCategory"
+      @category-selected="selectedCategory = $event"
+    />
+
     <p v-if="error">{{ error }}</p>
 
-    <div v-for="team in teams" :key="team.id" class="team-card">
-      <h3>{{ team.name }}</h3>
-      <p>Categoría: {{ team.category }}</p>
-      <p>Club: {{ team.clubName || team.club?.name || 'Sin club' }}</p>
+    <div v-for="team in filteredTeams" :key="team.id" class="team-card">
+      <img :src="team.club.logoUrl" :alt="team.club.name" />
+
+      <div>
+        <h3>{{ team.name }}</h3>
+        <p>{{ team.category }}</p>
+        <p>{{ team.club.name }} · {{ team.club.city }}</p>
+      </div>
     </div>
   </section>
 </template>
@@ -36,12 +53,36 @@ onMounted(loadTeams)
 section {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .team-card {
-  background: white;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
   padding: 16px;
-  border-radius: 8px;
 }
+
+.team-card img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.team-card h3 {
+  margin: 0 0 4px;
+  color: var(--primary);
+  font-size: 18px;
+}
+
+.team-card p {
+  margin: 4px 0;
+  color: var(--text-secondary);
+}
+
 </style>

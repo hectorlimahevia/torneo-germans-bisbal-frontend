@@ -1,9 +1,18 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import api from '../api/api'
+import CategoryTabs from '../components/CategoryTabs.vue'
 
 const matches = ref([])
 const error = ref('')
+const categories = ['SUB6', 'SUB8', 'SUB10', 'SUB12']
+const selectedCategory = ref('SUB6')
+
+const filteredMatches = computed(() => {
+  return matches.value.filter(
+    (match) => match.localTeam.category === selectedCategory.value,
+  )
+})
 
 async function loadMatches() {
   try {
@@ -20,12 +29,19 @@ onMounted(loadMatches)
 <template>
   <section>
     <h2>Matches</h2>
+
     <p v-if="error">
   {{ error }}
 </p>
 
+<CategoryTabs
+  :categories="categories"
+  :selected-category="selectedCategory"
+  @category-selected="selectedCategory = $event"
+/>
+
 <div
-  v-for="match in matches"
+  v-for="match in filteredMatches"
   :key="match.id"
   class="match-card"
 >

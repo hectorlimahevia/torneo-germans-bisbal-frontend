@@ -1,66 +1,152 @@
+<script setup>
+import { ref } from 'vue'
+import { isAuthenticated, logout } from '@/auth/auth'
+
+const isMenuOpen = ref(false)
+
+function toggleMenu() {
+  isMenuOpen.value = !isMenuOpen.value
+}
+
+function closeMenu() {
+  isMenuOpen.value = false
+}
+
+function handleLogout() {
+  logout()
+  closeMenu()
+}
+</script>
+
 <template>
-  <header class="app-header">
-    <h1>Torneo UES</h1>
 
-    <nav class="app-nav">
-      <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/standings">Classification</RouterLink>
-      <RouterLink to="/matches">Matches</RouterLink>
-      <RouterLink to="/teams">Teams</RouterLink>
-      <RouterLink to="/rules">Rules</RouterLink>
-      <RouterLink to="/login">Login</RouterLink>
-      <RouterLink to="/ai">IA</RouterLink>
-    </nav>
-  </header>
+<header class="app-header">
+<button
+  class="menu-button"
+  :class="{ open: isMenuOpen }"
+  type="button"
+  @click="toggleMenu"
+>
+  {{ isMenuOpen ? '✕' : '☰' }}
+</button>
+</header>
 
-  <main class="app-main">
-    <RouterView />
-  </main>
+  <nav
+    v-if="isMenuOpen"
+    class="mobile-menu"
+  >
+    <RouterLink to="/" @click="closeMenu">Home</RouterLink>
+    <RouterLink to="/standings" @click="closeMenu">Standings</RouterLink>
+    <RouterLink to="/matches" @click="closeMenu">Matches</RouterLink>
+    <RouterLink to="/teams" @click="closeMenu">Teams</RouterLink>
+    <RouterLink to="/rules" @click="closeMenu">Rules</RouterLink>
+
+    <RouterLink
+      v-if="isAuthenticated"
+      to="/ai"
+      @click="closeMenu"
+    >
+      AI Assistant
+    </RouterLink>
+
+    <RouterLink
+      v-if="!isAuthenticated"
+      to="/login"
+      @click="closeMenu"
+    >
+      Login
+    </RouterLink>
+
+    <button
+      v-if="isAuthenticated"
+      type="button"
+      class="logout-link"
+      @click="handleLogout"
+    >
+      Logout
+    </button>
+  </nav>
+
+<main class="app-main">
+  <RouterView v-slot="{ Component, route }">
+    <component
+      :is="Component"
+      :class="{ 'page-container': route.name !== 'login' }"
+    />
+  </RouterView>
+</main>
+
 </template>
 
 <style scoped>
+.page-container {
+  padding-inline: 16px;
+  padding-bottom: 10px;
+}
+
 .app-header {
-  padding: 16px;
-  background: var(--primary);
+  position: fixed;
+  top: 18px;
+  left: 18px;
+  z-index: 100;
+}
+
+.menu-button {
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  font-size: 34px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.menu-button.open {
   color: white;
 }
 
-.app-header h1 {
-  margin: 0 0 12px;
-  font-size: 22px;
-}
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 90;
 
-.app-nav {
+  width: 270px;
+  height: 100vh;
+
+  background: var(--primary);
+
   display: flex;
   flex-direction: column;
-  gap: 8px;
+
+  padding-top: 90px;
+  box-shadow: var(--shadow);
 }
 
-.app-nav a {
+.mobile-menu a,
+.logout-link {
+  padding: 16px 28px;
+
   color: white;
+  background: transparent;
+
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 500;
+  font-size: 16px;
+
+  border: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mobile-menu a:hover,
+.logout-link:hover {
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .app-main {
-  padding: 16px;
-  max-width: 1100px;
-  margin: 0 auto;
-}
-
-/* Tablet / escritorio */
-@media (min-width: 768px) {
-  .app-header {
-    padding: 20px 32px;
-  }
-
-  .app-nav {
-    flex-direction: row;
-    gap: 16px;
-  }
-
-  .app-main {
-    padding: 32px;
-  }
+  min-height: 100vh;
+  padding-top: 72px;
 }
 </style>

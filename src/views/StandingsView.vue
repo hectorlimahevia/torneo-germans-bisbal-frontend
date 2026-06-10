@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import api from '@/api/api'
 import CategoryTabs from '@/components/CategoryTabs.vue'
 import { CATEGORIES } from '@/constants/categories.js'
+import StandingCard from '@/components/StandingCard.vue'
 
 const categories = CATEGORIES
 const selectedCategory = ref('SUB6')
@@ -28,76 +29,43 @@ onMounted(loadStandings)
 </script>
 
 <template>
-  <CategoryTabs
-    :categories="categories"
-    :selected-category="selectedCategory"
-    @category-selected="handleCategorySelected"
+  <section>
+    <CategoryTabs
+      :categories="categories"
+      :selected-category="selectedCategory"
+      @category-selected="handleCategorySelected"
+    />
+
+    <p v-if="error">
+      {{ error }}
+    </p>
+    <h2>Standings</h2>
+
+    <div
+  v-if="standings.length"
+  class="standings-list"
+>
+  <StandingCard
+    v-for="standing in standings"
+    :key="standing.teamId"
+    :standing="standing"
   />
 
-  <p v-if="error">
-    {{ error }}
-  </p>
-
-  <div class="table-container">
-    <table v-if="standings.length">
-      <thead>
-        <tr>
-          <th>Pos</th>
-          <th>Team</th>
-          <th>PJ</th>
-          <th>G</th>
-          <th>E</th>
-          <th>P</th>
-          <th>TF</th>
-          <th>TC</th>
-          <th>Dif</th>
-          <th>Pts</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="team in standings" :key="team.teamId">
-          <td>{{ team.rankPosition }}</td>
-          <td>{{ team.teamName }}</td>
-          <td>{{ team.played }}</td>
-          <td>{{ team.won }}</td>
-          <td>{{ team.drawn }}</td>
-          <td>{{ team.lost }}</td>
-          <td>{{ team.triesFor }}</td>
-          <td>{{ team.triesAgainst }}</td>
-          <td>{{ team.triesDifference }}</td>
-          <td>{{ team.totalPoints }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+</div>
+  </section>
 </template>
 
 <style scoped>
-.table-container {
-  overflow-x: auto;
+
+h2 {
+  color: var(--primary);
+  margin-bottom: 16px;
 }
 
-table {
-  margin-top: 2em;
-  width: 100%;
-  min-width: 720px;
-  border-collapse: collapse;
-  background: white;
+.standings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-th,
-td {
-  padding: 5px;
-  border: 1px solid #ddd;
-  text-align: center;
-}
-
-th {
-  background: #f0f0f0;
-}
-
-td:nth-child(2),
-th:nth-child(2) {
-  text-align: left;
-}
 </style>

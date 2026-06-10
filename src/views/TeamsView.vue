@@ -27,7 +27,6 @@ onMounted(loadTeams)
 </script>
 
 <template>
-  <section>
     <h2>Equipos</h2>
 
     <CategoryTabs
@@ -47,7 +46,7 @@ onMounted(loadTeams)
         <p>{{ team.club.name }} · {{ team.club.city }}</p>
       </div>
     </div>
-  </section>
+    
 </template>
 
 <style scoped>
@@ -56,6 +55,8 @@ section {
   flex-direction: column;
   gap: 16px;
 }
+
+
 
 .team-card {
   display: flex;

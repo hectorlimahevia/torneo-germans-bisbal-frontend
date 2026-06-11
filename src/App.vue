@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
-import { isAuthenticated, logout } from '@/auth/auth'
+import { isAuthenticated, currentUser, isAdmin, logout } from '@/auth/auth'
+import AiChatWidget from '@/components/AiChatWidget.vue'
 
 const isMenuOpen = ref(false)
 
@@ -19,63 +20,38 @@ function handleLogout() {
 </script>
 
 <template>
+  <header class="app-header">
+    <button class="menu-button" :class="{ open: isMenuOpen }" type="button" @click="toggleMenu">
+      {{ isMenuOpen ? '✕' : '☰' }}
+    </button>
 
-<header class="app-header">
-<button
-  class="menu-button"
-  :class="{ open: isMenuOpen }"
-  type="button"
-  @click="toggleMenu"
->
-  {{ isMenuOpen ? '✕' : '☰' }}
-</button>
-</header>
+    <div v-if="isAuthenticated" class="user-badge">
+      <span>{{ isAdmin ? '🛡️' : '👤' }}</span>
+      <span>{{ currentUser }}</span>
+    </div>
+  </header>
 
-  <nav
-    v-if="isMenuOpen"
-    class="mobile-menu"
-  >
+  <nav v-if="isMenuOpen" class="mobile-menu">
     <RouterLink to="/" @click="closeMenu">Home</RouterLink>
     <RouterLink to="/standings" @click="closeMenu">Standings</RouterLink>
     <RouterLink to="/matches" @click="closeMenu">Matches</RouterLink>
     <RouterLink to="/teams" @click="closeMenu">Teams</RouterLink>
     <RouterLink to="/rules" @click="closeMenu">Rules</RouterLink>
 
-    <RouterLink
-      v-if="isAuthenticated"
-      to="/ai"
-      @click="closeMenu"
-    >
-      AI Assistant
-    </RouterLink>
+    <RouterLink v-if="!isAuthenticated" to="/login" @click="closeMenu"> Login </RouterLink>
 
-    <RouterLink
-      v-if="!isAuthenticated"
-      to="/login"
-      @click="closeMenu"
-    >
-      Login
-    </RouterLink>
-
-    <button
-      v-if="isAuthenticated"
-      type="button"
-      class="logout-link"
-      @click="handleLogout"
-    >
+    <button v-if="isAuthenticated" type="button" class="logout-link" @click="handleLogout">
       Logout
     </button>
   </nav>
 
-<main class="app-main">
-  <RouterView v-slot="{ Component, route }">
-    <component
-      :is="Component"
-      :class="{ 'page-container': route.name !== 'login' }"
-    />
-  </RouterView>
-</main>
+  <main class="app-main">
+    <RouterView v-slot="{ Component, route }">
+      <component :is="Component" :class="{ 'page-container': route.name !== 'login' }" />
+    </RouterView>
+  </main>
 
+  <AiChatWidget v-if="isAuthenticated" />
 </template>
 
 <style scoped>
@@ -92,20 +68,25 @@ function handleLogout() {
 }
 
 .menu-button {
-  width: 44px;
-  height: 44px;
-  background: transparent;
-  border: none;
+  width: 48px;
+  height: 48px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   color: var(--primary);
-  font-size: 34px;
+  font-size: 30px;
   font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
 }
 
 .menu-button.open {
+  background: var(--primary);
   color: white;
 }
-
 .mobile-menu {
   position: fixed;
   top: 0;
@@ -148,5 +129,28 @@ function handleLogout() {
 .app-main {
   min-height: 100vh;
   padding-top: 72px;
+}
+.user-badge {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 100;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 10px 12px;
+
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+
+  box-shadow: var(--shadow);
+
+  color: var(--primary);
+
+  font-size: 14px;
+  font-weight: 700;
 }
 </style>

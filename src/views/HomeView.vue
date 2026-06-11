@@ -46,8 +46,6 @@ onMounted(loadHomeData)
       <RouterLink to="/teams"> Teams </RouterLink>
 
       <RouterLink to="/rules"> Rules </RouterLink>
-
-      <RouterLink v-if="isAuthenticated" to="/ai"> AI </RouterLink>
     </div>
 
     <section class="home-section">

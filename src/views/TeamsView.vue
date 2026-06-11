@@ -27,7 +27,8 @@ onMounted(loadTeams)
 </script>
 
 <template>
-    <h2>Equipos</h2>
+  <section>
+    <h2>Teams</h2>
 
     <CategoryTabs
       :categories="categories"
@@ -37,8 +38,15 @@ onMounted(loadTeams)
 
     <p v-if="error">{{ error }}</p>
 
-    <div v-for="team in filteredTeams" :key="team.id" class="team-card">
-      <img :src="team.club.logoUrl" :alt="team.club.name" />
+    <div
+      v-for="team in filteredTeams"
+      :key="team.id"
+      class="team-card"
+    >
+      <img
+        :src="team.club.logoUrl"
+        :alt="team.club.name"
+      >
 
       <div>
         <h3>{{ team.name }}</h3>
@@ -46,7 +54,7 @@ onMounted(loadTeams)
         <p>{{ team.club.name }} · {{ team.club.city }}</p>
       </div>
     </div>
-    
+  </section>
 </template>
 
 <style scoped>
@@ -55,8 +63,6 @@ section {
   flex-direction: column;
   gap: 16px;
 }
-
-
 
 .team-card {
   display: flex;

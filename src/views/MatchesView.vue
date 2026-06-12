@@ -13,7 +13,14 @@ const categories = CATEGORIES
 const selectedCategory = ref('SUB6')
 
 const filteredMatches = computed(() => {
-  return matches.value.filter((match) => match.localTeam?.category === selectedCategory.value)
+  return matches.value
+    .filter((match) => match.localTeam?.category === selectedCategory.value)
+    .sort((a, b) => {
+      const dateA = new Date(`${a.matchDate}T${a.startTime}`)
+      const dateB = new Date(`${b.matchDate}T${b.startTime}`)
+
+      return dateA - dateB
+    })
 })
 
 async function loadMatches() {

@@ -104,11 +104,29 @@ async function createMatch() {
     })
 
     success.value = 'Match created successfully'
+    resetCreateForm()
 
     await loadData()
   } catch (err) {
     console.error(err)
     error.value = 'Could not create match'
+  }
+}
+
+function resetCreateForm() {
+  selectedCategory.value = ''
+
+  newMatch.value = {
+    localTeamId: '',
+    visitorTeamId: '',
+    fieldId: '',
+    matchDate: '',
+    startTime: '',
+    endTime: '',
+    localTries: 0,
+    visitorTries: 0,
+    status: 'SCHEDULED',
+    roundNumber: 1,
   }
 }
 

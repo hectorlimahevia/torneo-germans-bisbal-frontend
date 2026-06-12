@@ -26,6 +26,11 @@ const newMatch = ref({
   roundNumber: 1,
 })
 
+const newField = ref({
+  name: '',
+  location: '',
+})
+
 const selectedMatchId = ref('')
 
 const matchUpdate = ref({
@@ -177,6 +182,28 @@ async function deleteMatch() {
   }
 }
 
+async function createField() {
+  try {
+    error.value = ''
+    success.value = ''
+
+    await api.post('/api/fields', newField.value)
+
+    success.value = 'Field created successfully'
+
+    newField.value = {
+      name: '',
+      location: '',
+    }
+
+    await loadData()
+  } catch (err) {
+    console.error(err)
+
+    error.value = 'Could not create field'
+  }
+}
+
 onMounted(loadData)
 </script>
 
@@ -192,19 +219,40 @@ onMounted(loadData)
       {{ error }}
     </p>
 
+    <div class="admin-stats">
+      <div class="stat-card">
+        <span>{{ matches.length }}</span>
+        <p>Matches</p>
+      </div>
+
+      <div class="stat-card">
+        <span>{{ teams.length }}</span>
+        <p>Teams</p>
+      </div>
+
+      <div class="stat-card">
+        <span>{{ fields.length }}</span>
+        <p>Fields</p>
+      </div>
+    </div>
+
     <div class="admin-tabs">
       <button
         :class="{ active: selectedAdminTab === 'create' }"
         @click="selectedAdminTab = 'create'"
       >
-        📅 Schedule Match
+        📅 Create Match
       </button>
 
       <button
         :class="{ active: selectedAdminTab === 'update' }"
         @click="selectedAdminTab = 'update'"
       >
-        🏆 Update Result
+        🏆 Update Match
+      </button>
+
+      <button :class="{ active: selectedAdminTab === 'field' }" @click="selectedAdminTab = 'field'">
+        📍 Create Field
       </button>
     </div>
 
@@ -346,6 +394,24 @@ onMounted(loadData)
       <button type="button" class="create-button" @click="updateMatch">Update Match</button>
       <button type="button" class="delete-button" @click="deleteMatch">Delete Match</button>
     </form>
+
+    <form v-if="selectedAdminTab === 'field'" class="admin-form">
+      <h3>Create Field</h3>
+
+      <div class="form-group">
+        <label for="fieldName"> Field Name </label>
+
+        <input id="fieldName" v-model="newField.name" type="text" placeholder="Field 3" />
+      </div>
+
+      <div class="form-group">
+        <label for="fieldLocation"> Location </label>
+
+        <input id="fieldLocation" v-model="newField.location" type="text" placeholder="Sant Boi" />
+      </div>
+
+      <button type="button" class="create-button" @click="createField">Create Field</button>
+    </form>
   </section>
 </template>
 
@@ -447,7 +513,7 @@ h3 {
   background: none;
   border: none;
   color: var(--text-secondary);
-  font-weight: 800;
+  font-weight: 600;
   white-space: nowrap;
   padding: 10px 0;
   position: relative;
@@ -489,4 +555,36 @@ h3 {
   background: #b91c1c;
   transform: translateY(-2px);
 }
+
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.stat-card {
+  background: var(--primary-light);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.stat-card span {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #eafadd;
+}
+
+.stat-card p {
+  margin: 6px 0 0 0;
+
+  color: #fff;
+
+  font-size: 0.9rem;
+}
+
+
 </style>

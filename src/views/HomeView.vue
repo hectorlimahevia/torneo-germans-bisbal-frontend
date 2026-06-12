@@ -1,7 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
-import { isAuthenticated } from '@/auth/auth'
 
 import api from '@/api/api'
 

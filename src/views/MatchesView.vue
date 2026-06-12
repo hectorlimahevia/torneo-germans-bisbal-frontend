@@ -13,7 +13,7 @@ const categories = CATEGORIES
 const selectedCategory = ref('SUB6')
 
 const filteredMatches = computed(() => {
-  return matches.value.filter((match) => match.localTeam.category === selectedCategory.value)
+  return matches.value.filter((match) => match.localTeam?.category === selectedCategory.value)
 })
 
 async function loadMatches() {

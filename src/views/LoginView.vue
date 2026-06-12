@@ -4,7 +4,7 @@ import { login as saveLogin } from '@/auth/auth'
 import { ref } from 'vue'
 import api from '@/api/api'
 
-const username = ref('john')
+const username = ref('james')
 const password = ref('1234')
 const message = ref('')
 const router = useRouter()
@@ -79,7 +79,6 @@ async function login() {
   background-position: center;
   background-repeat: no-repeat;
   display: flex;
-
   padding: 24px;
 }
 

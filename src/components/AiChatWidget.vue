@@ -117,7 +117,7 @@ async function sendMessage() {
   height: 60px;
   border: none;
   border-radius: 50%;
-  background: var(--primary);
+  background: #2b8de9;
   color: white;
   font-size: 28px;
   box-shadow: var(--shadow);

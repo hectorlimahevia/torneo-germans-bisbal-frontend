@@ -1,9 +1,12 @@
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { isAuthenticated, currentUser, isAdmin, logout } from '@/auth/auth'
 import AiChatWidget from '@/components/AiChatWidget.vue'
+import AppFooter from '@/components/AppFooter.vue'
 
 const isMenuOpen = ref(false)
+const router = useRouter()
 
 function toggleMenu() {
   isMenuOpen.value = !isMenuOpen.value
@@ -16,6 +19,8 @@ function closeMenu() {
 function handleLogout() {
   logout()
   closeMenu()
+
+  router.push('/')
 }
 </script>
 
@@ -38,6 +43,8 @@ function handleLogout() {
     <RouterLink to="/teams" @click="closeMenu">Teams</RouterLink>
     <RouterLink to="/rules" @click="closeMenu">Rules</RouterLink>
 
+    <RouterLink v-if="isAdmin" to="/admin" @click="closeMenu"> Admin </RouterLink>
+
     <RouterLink v-if="!isAuthenticated" to="/login" @click="closeMenu"> Login </RouterLink>
 
     <button v-if="isAuthenticated" type="button" class="logout-link" @click="handleLogout">
@@ -52,6 +59,8 @@ function handleLogout() {
   </main>
 
   <AiChatWidget v-if="isAuthenticated" />
+
+  <AppFooter v-if="$route.name !== 'login'" />
 </template>
 
 <style scoped>

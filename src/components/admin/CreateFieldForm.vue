@@ -1,7 +1,18 @@
 <script setup>
-import { ref } from 'vue'
-
+import { ref, watch } from 'vue'
 const emit = defineEmits(['field-created', 'field-deleted'])
+
+const props = defineProps({
+  fields: {
+    type: Array,
+    required: true,
+  },
+
+  resetKey: {
+    type: Number,
+    required: true,
+  },
+})
 
 const newField = ref({
   name: '',
@@ -9,6 +20,15 @@ const newField = ref({
 })
 
 const selectedFieldId = ref('')
+
+function resetForm() {
+  newField.value = {
+    name: '',
+    location: '',
+  }
+
+  selectedFieldId.value = ''
+}
 
 function submitField() {
   emit('field-created', {
@@ -19,13 +39,13 @@ function submitField() {
 function submitDeleteField() {
   emit('field-deleted', selectedFieldId.value)
 }
-const props = defineProps({
-  fields: {
-    type: Array,
-    required: true,
-  },
-})
 
+watch(
+  () => props.resetKey,
+  () => {
+    resetForm()
+  },
+)
 </script>
 
 <template>

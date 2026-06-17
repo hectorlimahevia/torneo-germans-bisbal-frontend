@@ -1,6 +1,7 @@
 <script setup>
-import { ref, computed } from 'vue'
+
 import { CATEGORIES } from '@/constants/categories.js'
+import { ref, computed, watch } from 'vue'
 
 const props = defineProps({
   teams: {
@@ -10,6 +11,11 @@ const props = defineProps({
 
   fields: {
     type: Array,
+    required: true,
+  },
+
+  resetKey: {
+    type: Number,
     required: true,
   },
 })
@@ -53,6 +59,32 @@ function resetSelectedTeams() {
   newMatch.value.localTeamId = ''
   newMatch.value.visitorTeamId = ''
 }
+
+function resetForm() {
+  selectedCategory.value = ''
+
+  newMatch.value = {
+    localTeamId: '',
+    visitorTeamId: '',
+    fieldId: '',
+    matchDate: '',
+    startTime: '',
+    endTime: '',
+    localTries: 0,
+    visitorTries: 0,
+    status: 'SCHEDULED',
+    roundNumber: 1,
+  }
+}
+
+watch(
+  () => props.resetKey,
+  () => {
+    console.log('RESET RECEIVED')
+    resetForm()
+  },
+)
+
 </script>
 
 <template>

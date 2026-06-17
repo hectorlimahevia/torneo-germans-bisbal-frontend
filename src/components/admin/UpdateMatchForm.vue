@@ -1,10 +1,14 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { CATEGORIES } from '@/constants/categories.js'
 
 const props = defineProps({
   matches: {
     type: Array,
+    required: true,
+  },
+  resetKey: {
+    type: Number,
     required: true,
   },
 })
@@ -19,6 +23,17 @@ const matchUpdate = ref({
   visitorTries: 0,
   status: 'FINISHED',
 })
+
+function resetForm() {
+  updateCategory.value = ''
+  selectedMatchId.value = ''
+
+  matchUpdate.value = {
+    localTries: 0,
+    visitorTries: 0,
+    status: 'FINISHED',
+  }
+}
 
 const filteredMatches = computed(() => {
   if (!updateCategory.value) {
@@ -40,6 +55,13 @@ function submitUpdateMatch() {
 function submitDeleteMatch() {
   emit('match-deleted', selectedMatchId.value)
 }
+
+watch(
+  () => props.resetKey,
+  () => {
+    resetForm()
+  },
+)
 </script>
 
 <template>

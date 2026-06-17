@@ -14,6 +14,9 @@ import { useToast } from '@/composables/useToast'
 const teams = ref([])
 const fields = ref([])
 const matches = ref([])
+const scheduleResetKey = ref(0)
+const updateResetKey = ref(0)
+const fieldResetKey = ref(0)
 
 const selectedAdminTab = ref('create')
 const error = ref('')
@@ -53,6 +56,7 @@ async function createMatch(matchData) {
     })
 
     showToast('Match created successfully', 'success')
+    scheduleResetKey.value++
 
     await loadData()
   } catch (err) {
@@ -95,6 +99,7 @@ async function updateMatch(payload) {
     })
 
     showToast('Match updated successfully', 'success')
+    updateResetKey.value++
 
     await loadData()
   } catch (err) {
@@ -122,6 +127,7 @@ async function deleteMatch(selectedMatchId) {
     await api.delete(`/api/matches/${selectedMatchId}`)
 
     showToast('Match deleted successfully', 'success')
+    updateResetKey.value++
 
     await loadData()
   } catch (err) {
@@ -138,6 +144,7 @@ async function createField(fieldData) {
     await api.post('/api/fields', fieldData)
 
     showToast('Field created successfully', 'success')
+    fieldResetKey.value++
 
     await loadData()
   } catch (err) {
@@ -165,6 +172,7 @@ async function deleteField(fieldId) {
     await api.delete(`/api/fields/${fieldId}`)
 
     showToast('Field deleted successfully', 'success')
+    fieldResetKey.value++
 
     await loadData()
   } catch (err) {
@@ -193,19 +201,25 @@ onMounted(loadData)
       v-if="selectedAdminTab === 'create'"
       :teams="teams"
       :fields="fields"
+      :reset-key="scheduleResetKey"
+      :key="scheduleResetKey"
       @match-created="createMatch"
     />
 
     <UpdateMatchForm
       v-if="selectedAdminTab === 'update'"
+      :key="updateResetKey"
       :matches="matches"
+      :reset-key="updateResetKey"
       @match-updated="updateMatch"
       @match-deleted="deleteMatch"
     />
 
     <CreateFieldForm
       v-if="selectedAdminTab === 'field'"
+      :key="fieldResetKey"
       :fields="fields"
+      :reset-key="fieldResetKey"
       @field-created="createField"
       @field-deleted="deleteField"
     />

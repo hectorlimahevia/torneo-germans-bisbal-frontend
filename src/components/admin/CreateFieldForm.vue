@@ -12,6 +12,11 @@ const props = defineProps({
     type: Number,
     required: true,
   },
+
+  isLoading: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const newField = ref({
@@ -64,7 +69,9 @@ watch(
       <input id="fieldLocation" v-model="newField.location" type="text" placeholder="Sant Boi" />
     </div>
 
-    <button type="button" class="create-button" @click="submitField">Create Field</button>
+    <button type="button" class="create-button" :disabled="props.isLoading" @click="submitField">
+      {{ props.isLoading ? 'Creating...' : 'Create Field' }}
+    </button>
 
     <div class="form-divider"></div>
 
@@ -175,5 +182,18 @@ h3 {
 .delete-button:hover {
   background: #b91c1c;
   transform: translateY(-2px);
+}
+
+.create-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.create-button:disabled:hover {
+  background: var(--primary);
+  transform: none;
+  box-shadow: none;
 }
 </style>

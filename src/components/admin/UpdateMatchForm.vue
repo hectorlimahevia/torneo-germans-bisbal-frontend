@@ -11,6 +11,10 @@ const props = defineProps({
     type: Number,
     required: true,
   },
+  isLoading: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['match-updated', 'match-deleted'])
@@ -90,7 +94,7 @@ watch(
           {{ match.localTeam?.name || 'Unknown local team' }}
           vs
           {{ match.visitorTeam?.name || 'Unknown visitor team' }}
-          · {{ match.matchDate }} · {{ match.startTime.substring(0, 5) }}
+          · {{ match.matchDate }} · {{ match.startTime?.substring(0, 5) || '--:--' }}
         </option>
       </select>
     </div>
@@ -120,7 +124,14 @@ watch(
       </select>
     </div>
 
-    <button type="button" class="create-button" @click="submitUpdateMatch">Update Match</button>
+    <button
+      type="button"
+      class="create-button"
+      :disabled="props.isLoading"
+      @click="submitUpdateMatch"
+    >
+      {{ props.isLoading ? 'Updating...' : 'Update Match' }}
+    </button>
 
     <button type="button" class="delete-button" @click="submitDeleteMatch">Delete Match</button>
   </form>
@@ -206,5 +217,18 @@ h3 {
 .delete-button:hover {
   background: #b91c1c;
   transform: translateY(-2px);
+}
+
+.create-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.create-button:disabled:hover {
+  background: var(--primary);
+  transform: none;
+  box-shadow: none;
 }
 </style>

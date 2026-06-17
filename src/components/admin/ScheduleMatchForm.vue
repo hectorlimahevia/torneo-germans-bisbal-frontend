@@ -1,5 +1,4 @@
 <script setup>
-
 import { CATEGORIES } from '@/constants/categories.js'
 import { ref, computed, watch } from 'vue'
 
@@ -17,6 +16,11 @@ const props = defineProps({
   resetKey: {
     type: Number,
     required: true,
+  },
+
+  isLoading: {
+    type: Boolean,
+    default: false,
   },
 })
 
@@ -80,11 +84,9 @@ function resetForm() {
 watch(
   () => props.resetKey,
   () => {
-    console.log('RESET RECEIVED')
     resetForm()
   },
 )
-
 </script>
 
 <template>
@@ -167,7 +169,9 @@ watch(
       </div>
     </div>
 
-    <button type="button" class="create-button" @click="submitMatch">Create Match</button>
+    <button type="button" class="create-button" :disabled="props.isLoading" @click="submitMatch">
+      {{ props.isLoading ? 'Creating...' : 'Create Match' }}
+    </button>
   </form>
 </template>
 
@@ -230,5 +234,18 @@ watch(
   background: var(--primary-light);
   transform: translateY(-2px);
   box-shadow: var(--shadow);
+}
+
+.create-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.create-button:disabled:hover {
+  background: var(--primary);
+  transform: none;
+  box-shadow: none;
 }
 </style>

@@ -8,18 +8,34 @@ import AdminTabs from '@/components/admin/AdminTabs.vue'
 import ScheduleMatchForm from '@/components/admin/ScheduleMatchForm.vue'
 import UpdateMatchForm from '@/components/admin/UpdateMatchForm.vue'
 import CreateFieldForm from '@/components/admin/CreateFieldForm.vue'
+import ConfirmModal from '@/components/ConfirmModal.vue'
 
 import { useToast } from '@/composables/useToast'
 
 const teams = ref([])
 const fields = ref([])
 const matches = ref([])
+
 const scheduleResetKey = ref(0)
 const updateResetKey = ref(0)
 const fieldResetKey = ref(0)
 
 const selectedAdminTab = ref('create')
 const error = ref('')
+
+const loading = ref({
+  createMatch: false,
+  updateMatch: false,
+  createField: false,
+  deleteItem: false,
+})
+
+const showConfirmModal = ref(false)
+
+const confirmConfig = ref({
+  type: '',
+  id: null,
+})
 
 const { showToast } = useToast()
 
@@ -36,6 +52,7 @@ async function loadData() {
     matches.value = matchesResponse.data
   } catch (err) {
     console.error(err)
+
     error.value = 'Could not load admin data'
   }
 }
@@ -45,6 +62,8 @@ function getErrorMessage(err, fallbackMessage) {
 }
 
 async function createMatch(matchData) {
+  loading.value.createMatch = true
+
   try {
     error.value = ''
 
@@ -56,6 +75,7 @@ async function createMatch(matchData) {
     })
 
     showToast('Match created successfully', 'success')
+
     scheduleResetKey.value++
 
     await loadData()
@@ -63,13 +83,17 @@ async function createMatch(matchData) {
     console.error(err)
 
     showToast(getErrorMessage(err, 'Could not create match'), 'error')
+  } finally {
+    loading.value.createMatch = false
   }
 }
 
 async function updateMatch(payload) {
+  loading.value.updateMatch = true
+
   const selectedMatchId = payload.selectedMatchId
   const matchUpdate = payload.matchUpdate
-
+  
   try {
     error.value = ''
 
@@ -99,6 +123,7 @@ async function updateMatch(payload) {
     })
 
     showToast('Match updated successfully', 'success')
+
     updateResetKey.value++
 
     await loadData()
@@ -106,44 +131,35 @@ async function updateMatch(payload) {
     console.error(err)
 
     showToast(getErrorMessage(err, 'Could not update match'), 'error')
+  } finally {
+    loading.value.updateMatch = false
   }
 }
 
-async function deleteMatch(selectedMatchId) {
-  try {
-    error.value = ''
-
-    if (!selectedMatchId) {
-      showToast('Please select a match', 'error')
-      return
-    }
-
-    const confirmed = window.confirm('Are you sure you want to delete this match?')
-
-    if (!confirmed) {
-      return
-    }
-
-    await api.delete(`/api/matches/${selectedMatchId}`)
-
-    showToast('Match deleted successfully', 'success')
-    updateResetKey.value++
-
-    await loadData()
-  } catch (err) {
-    console.error(err)
-
-    showToast(getErrorMessage(err, 'Could not delete match'), 'error')
+function deleteMatch(matchId) {
+  if (!matchId) {
+    showToast('Please select a match', 'error')
+    return
   }
+
+  confirmConfig.value = {
+    type: 'match',
+    id: matchId,
+  }
+
+  showConfirmModal.value = true
 }
 
 async function createField(fieldData) {
+  loading.value.createField = true
+
   try {
     error.value = ''
 
     await api.post('/api/fields', fieldData)
 
     showToast('Field created successfully', 'success')
+
     fieldResetKey.value++
 
     await loadData()
@@ -151,34 +167,63 @@ async function createField(fieldData) {
     console.error(err)
 
     showToast(getErrorMessage(err, 'Could not create field'), 'error')
+  } finally {
+    loading.value.createField = false
   }
 }
 
-async function deleteField(fieldId) {
+function deleteField(fieldId) {
+  if (!fieldId) {
+    showToast('Please select a field', 'error')
+    return
+  }
+
+  confirmConfig.value = {
+    type: 'field',
+    id: fieldId,
+  }
+
+  showConfirmModal.value = true
+}
+
+async function confirmDelete() {
+  loading.value.deleteItem = true
+
   try {
-    error.value = ''
+    if (confirmConfig.value.type === 'match') {
+      await api.delete(`/api/matches/${confirmConfig.value.id}`)
 
-    if (!fieldId) {
-      showToast('Please select a field', 'error')
-      return
+      showToast('Match deleted successfully', 'success')
+
+      updateResetKey.value++
     }
 
-    const confirmed = window.confirm('Are you sure you want to delete this field?')
+    if (confirmConfig.value.type === 'field') {
+      await api.delete(`/api/fields/${confirmConfig.value.id}`)
 
-    if (!confirmed) {
-      return
+      showToast('Field deleted successfully', 'success')
+
+      fieldResetKey.value++
     }
 
-    await api.delete(`/api/fields/${fieldId}`)
-
-    showToast('Field deleted successfully', 'success')
-    fieldResetKey.value++
+    closeConfirmModal()
 
     await loadData()
   } catch (err) {
     console.error(err)
 
-    showToast(getErrorMessage(err, 'Could not delete field'), 'error')
+    showToast(getErrorMessage(err, 'Could not delete item'), 'error')
+  } finally {
+    loading.value.deleteItem = false
+  }
+}
+
+function closeConfirmModal() {
+  showConfirmModal.value = false
+
+  confirmConfig.value = {
+    type: '',
+    id: null,
   }
 }
 
@@ -199,10 +244,11 @@ onMounted(loadData)
 
     <ScheduleMatchForm
       v-if="selectedAdminTab === 'create'"
+      :key="scheduleResetKey"
       :teams="teams"
       :fields="fields"
       :reset-key="scheduleResetKey"
-      :key="scheduleResetKey"
+      :is-loading="loading.createMatch"
       @match-created="createMatch"
     />
 
@@ -211,6 +257,7 @@ onMounted(loadData)
       :key="updateResetKey"
       :matches="matches"
       :reset-key="updateResetKey"
+      :is-loading="loading.updateMatch"
       @match-updated="updateMatch"
       @match-deleted="deleteMatch"
     />
@@ -220,6 +267,7 @@ onMounted(loadData)
       :key="fieldResetKey"
       :fields="fields"
       :reset-key="fieldResetKey"
+      :is-loading="loading.createField"
       @field-created="createField"
       @field-deleted="deleteField"
     />
@@ -227,6 +275,22 @@ onMounted(loadData)
     <p v-if="error" class="error-message">
       {{ error }}
     </p>
+
+    <ConfirmModal
+      v-if="showConfirmModal"
+      :title="confirmConfig.type === 'field' ? 'Delete Field' : 'Delete Match'"
+      :message="
+        confirmConfig.type === 'field'
+          ? 'Are you sure you want to delete this field? This action cannot be undone.'
+          : 'Are you sure you want to delete this match? This action cannot be undone.'
+      "
+      confirm-text="Delete"
+      cancel-text="Cancel"
+      :danger="true"
+      :is-loading="loading.deleteItem"
+      @confirm="confirmDelete"
+      @cancel="closeConfirmModal"
+    />
   </section>
 </template>
 

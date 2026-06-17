@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { isAuthenticated, currentUser, isAdmin, logout } from '@/auth/auth'
 import AiChatWidget from '@/components/AiChatWidget.vue'
 import AppFooter from '@/components/AppFooter.vue'
+import ToastContainer from '@/components/ToastContainer.vue'
 
 const isMenuOpen = ref(false)
 const router = useRouter()
@@ -62,6 +63,7 @@ function handleLogout() {
   <AiChatWidget v-if="isAuthenticated" />
 
   <AppFooter v-if="$route.name !== 'login'" />
+  <ToastContainer />
 </template>
 
 <style scoped>
@@ -133,6 +135,7 @@ function handleLogout() {
   min-height: 100vh;
   padding-top: 72px;
 }
+
 .user-badge {
   position: fixed;
   top: 18px;
@@ -140,7 +143,7 @@ function handleLogout() {
   z-index: 100;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   padding: 10px 12px;
   background: var(--primary-light);
   border: 1px solid var(--border);
@@ -153,11 +156,5 @@ function handleLogout() {
 
 .user-badge i {
   font-size: 0.95rem;
-}
-
-.user-badge {
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 </style>

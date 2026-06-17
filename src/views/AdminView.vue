@@ -1,19 +1,24 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+
 import api from '@/api/api'
+
 import AdminStats from '@/components/admin/AdminStats.vue'
 import AdminTabs from '@/components/admin/AdminTabs.vue'
 import ScheduleMatchForm from '@/components/admin/ScheduleMatchForm.vue'
-import CreateFieldForm from '@/components/admin/CreateFieldForm.vue'
 import UpdateMatchForm from '@/components/admin/UpdateMatchForm.vue'
+import CreateFieldForm from '@/components/admin/CreateFieldForm.vue'
+
+import { useToast } from '@/composables/useToast'
 
 const teams = ref([])
 const fields = ref([])
 const matches = ref([])
-const selectedAdminTab = ref('create')
 
+const selectedAdminTab = ref('create')
 const error = ref('')
-const success = ref('')
+
+const { showToast } = useToast()
 
 async function loadData() {
   try {
@@ -39,7 +44,6 @@ function getErrorMessage(err, fallbackMessage) {
 async function createMatch(matchData) {
   try {
     error.value = ''
-    success.value = ''
 
     await api.post('/api/matches', {
       ...matchData,
@@ -48,13 +52,13 @@ async function createMatch(matchData) {
       status: 'SCHEDULED',
     })
 
-    success.value = 'Match created successfully'
+    showToast('Match created successfully', 'success')
 
     await loadData()
   } catch (err) {
     console.error(err)
 
-    error.value = getErrorMessage(err, 'Could not create match')
+    showToast(getErrorMessage(err, 'Could not create match'), 'error')
   }
 }
 
@@ -64,17 +68,16 @@ async function updateMatch(payload) {
 
   try {
     error.value = ''
-    success.value = ''
 
     if (!selectedMatchId) {
-      error.value = 'Please select a match'
+      showToast('Please select a match', 'error')
       return
     }
 
     const selectedMatch = matches.value.find((match) => match.id === selectedMatchId)
 
     if (!selectedMatch) {
-      error.value = 'Selected match not found'
+      showToast('Selected match not found', 'error')
       return
     }
 
@@ -91,23 +94,22 @@ async function updateMatch(payload) {
       status: matchUpdate.status,
     })
 
-    success.value = 'Match updated successfully'
+    showToast('Match updated successfully', 'success')
 
     await loadData()
   } catch (err) {
     console.error(err)
 
-    error.value = getErrorMessage(err, 'Could not update match')
+    showToast(getErrorMessage(err, 'Could not update match'), 'error')
   }
 }
 
 async function deleteMatch(selectedMatchId) {
   try {
     error.value = ''
-    success.value = ''
 
     if (!selectedMatchId) {
-      error.value = 'Please select a match'
+      showToast('Please select a match', 'error')
       return
     }
 
@@ -119,40 +121,38 @@ async function deleteMatch(selectedMatchId) {
 
     await api.delete(`/api/matches/${selectedMatchId}`)
 
-    success.value = 'Match deleted successfully'
+    showToast('Match deleted successfully', 'success')
 
     await loadData()
   } catch (err) {
     console.error(err)
 
-    error.value = getErrorMessage(err, 'Could not delete match')
+    showToast(getErrorMessage(err, 'Could not delete match'), 'error')
   }
 }
 
 async function createField(fieldData) {
   try {
     error.value = ''
-    success.value = ''
 
     await api.post('/api/fields', fieldData)
 
-    success.value = 'Field created successfully'
+    showToast('Field created successfully', 'success')
 
     await loadData()
   } catch (err) {
     console.error(err)
 
-    error.value = getErrorMessage(err, 'Could not create field')
+    showToast(getErrorMessage(err, 'Could not create field'), 'error')
   }
 }
 
 async function deleteField(fieldId) {
   try {
     error.value = ''
-    success.value = ''
 
     if (!fieldId) {
-      error.value = 'Please select a field'
+      showToast('Please select a field', 'error')
       return
     }
 
@@ -164,13 +164,13 @@ async function deleteField(fieldId) {
 
     await api.delete(`/api/fields/${fieldId}`)
 
-    success.value = 'Field deleted successfully'
+    showToast('Field deleted successfully', 'success')
 
     await loadData()
   } catch (err) {
     console.error(err)
 
-    error.value = getErrorMessage(err, 'Could not delete field')
+    showToast(getErrorMessage(err, 'Could not delete field'), 'error')
   }
 }
 
@@ -210,10 +210,6 @@ onMounted(loadData)
       @field-deleted="deleteField"
     />
 
-    <p v-if="success" class="success-message">
-      {{ success }}
-    </p>
-
     <p v-if="error" class="error-message">
       {{ error }}
     </p>
@@ -227,19 +223,12 @@ section {
   gap: 16px;
 }
 
-h2,
-h3 {
+h2 {
   color: var(--primary);
-}
-
-.success-message {
-  color: green;
-  font-weight: 700;
 }
 
 .error-message {
   color: red;
   font-weight: 700;
 }
-
 </style>

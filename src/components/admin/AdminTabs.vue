@@ -51,10 +51,12 @@ const emit = defineEmits(['tab-selected'])
 <style scoped>
 .admin-tabs-container {
   margin-bottom: 24px;
+  margin-top: 24px;
 }
 
 .panel-title {
   margin: 0 0 16px 0;
+  color: var(--text-primary);
 
   font-size: 1.4rem;
   font-weight: 800;

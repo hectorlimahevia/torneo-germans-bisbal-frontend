@@ -15,9 +15,7 @@ const scheduleRules = computed(() => {
 })
 
 const filteredRules = computed(() => {
-  return selectedRuleType.value === 'scoring'
-    ? scoringRules.value
-    : scheduleRules.value
+  return selectedRuleType.value === 'scoring' ? scoringRules.value : scheduleRules.value
 })
 
 async function loadRules() {
@@ -34,62 +32,68 @@ onMounted(loadRules)
 </script>
 
 <template>
-  <section>
+  <section class="principal-section">
     <h2>Rules</h2>
 
-    <div class="rule-tabs">
-  <button
-    type="button"
-    :class="{ active: selectedRuleType === 'scoring' }"
-    @click="selectedRuleType = 'scoring'"
-  >
-    🏆 Scoring System
-  </button>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam interdum massa vitae metus
+      feugiat consectetur. Nam hendrerit cursus quam sed lacinia. Curabitur diam ex, condimentum
+      eleifend magna eget, scelerisque imperdiet dui. Phasellus egestas arcu id aliquam ornare. Nunc
+      a erat et purus tristique euismod. Aenean magna dui, faucibus vitae justo sollicitudin,
+      hendrerit imperdiet tellus. Integer ipsum nisl, ultricies ac lobortis id, finibus at augue.
 
-  <button
-    type="button"
-    :class="{ active: selectedRuleType === 'schedule' }"
-    @click="selectedRuleType = 'schedule'"
-  >
-    📅 Category Schedule
-  </button>
-</div>
+    </p>
+
+    <div class="rule-tabs">
+      <button
+        type="button"
+        :class="{ active: selectedRuleType === 'scoring' }"
+        @click="selectedRuleType = 'scoring'"
+      ><i class="fa-solid fa-medal"></i>
+        Scoring System
+      </button>
+
+      <button
+        type="button"
+        :class="{ active: selectedRuleType === 'schedule' }"
+        @click="selectedRuleType = 'schedule'"
+      ><i class="fas fa-calendar-days"></i>
+        Category Schedule
+      </button>
+    </div>
 
     <p v-if="error">
       {{ error }}
     </p>
 
-   <div
-  v-for="rule in filteredRules"
-  :key="rule.id"
-  class="rule-card"
->
-  <div class="rule-header">
-    {{ rule.title }}
-  </div>
+    <div v-for="rule in filteredRules" :key="rule.id" class="rule-card">
+      <div class="rule-header">
+        {{ rule.title }}
+      </div>
 
-  <p class="rule-description">
-    {{ rule.description }}
-  </p>
+      <p class="rule-description">
+        {{ rule.description }}
+      </p>
 
-  <span
-    v-if="rule.points !== undefined"
-    class="points-badge"
-  >
-    +{{ rule.points }} pts
-  </span>
+      <span v-if="rule.points !== undefined" class="points-badge"> +{{ rule.points }} pts </span>
 
-  <span
-    v-if="rule.category"
-    class="category-badge"
-  >
-    {{ rule.category }}
-  </span>
-</div>
+      <span v-if="rule.category" class="category-badge">
+        {{ rule.category }}
+      </span>
+    </div>
   </section>
 </template>
 
 <style scoped>
+.principal-section {
+  margin-top: 6rem;
+}
+
+h2 {
+  color: var(--primary);
+  margin-bottom: 16px;
+}
+
 .rule-tabs {
   display: flex;
   gap: 20px;
@@ -101,7 +105,7 @@ onMounted(loadRules)
 .rule-tabs button {
   background: none;
   border: none;
-  color: var(--primary-light);
+  color: var(--text-secondary);
   font-weight: 800;
   white-space: nowrap;
   padding: 10px 0;
@@ -151,15 +155,10 @@ onMounted(loadRules)
 .points-badge,
 .category-badge {
   width: fit-content;
-
   padding: 6px 12px;
-
   border-radius: 999px;
-
   background: var(--primary-light);
-
   color: white;
-
   font-size: 12px;
   font-weight: 700;
 }

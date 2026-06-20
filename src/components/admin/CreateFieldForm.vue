@@ -98,19 +98,10 @@ watch(
   display: flex;
   flex-direction: column;
   gap: 16px;
-
   background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-
-  padding: 16px;
+ padding: 16px;
 }
 
-h3 {
-  margin: 0;
-  color: var(--primary);
-}
 
 .form-group {
   display: flex;

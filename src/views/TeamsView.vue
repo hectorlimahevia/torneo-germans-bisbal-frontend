@@ -27,7 +27,7 @@ onMounted(loadTeams)
 </script>
 
 <template>
-  <section>
+  <section class="principal-section">
     <h2>Teams</h2>
 
     <CategoryTabs
@@ -58,10 +58,16 @@ onMounted(loadTeams)
 </template>
 
 <style scoped>
-section {
+.principal-section {
   display: flex;
   flex-direction: column;
+  margin-top: 6rem;
   gap: 16px;
+}
+
+h2 {
+  color: var(--primary);
+  margin-bottom: 16px;
 }
 
 .team-card {

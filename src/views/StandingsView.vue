@@ -29,7 +29,9 @@ onMounted(loadStandings)
 </script>
 
 <template>
-  <section>
+  <section class="principal-section">
+
+    <h2>Standings</h2>
     <CategoryTabs
       :categories="categories"
       :selected-category="selectedCategory"
@@ -39,7 +41,6 @@ onMounted(loadStandings)
     <p v-if="error">
       {{ error }}
     </p>
-    <h2>Standings</h2>
 
     <div
   v-if="standings.length"
@@ -57,6 +58,9 @@ onMounted(loadStandings)
 
 <style scoped>
 
+.principal-section{
+  margin-top: 6rem;
+}
 h2 {
   color: var(--primary);
   margin-bottom: 16px;
@@ -67,5 +71,6 @@ h2 {
   flex-direction: column;
   gap: 16px;
 }
+
 
 </style>

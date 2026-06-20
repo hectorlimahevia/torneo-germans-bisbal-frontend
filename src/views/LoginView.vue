@@ -1,6 +1,7 @@
 <script setup>
 import { RouterLink, useRouter } from 'vue-router'
 import { login as saveLogin } from '@/auth/auth'
+import AuthLayout from '@/components/auth/AuthLayout.vue'
 import { ref } from 'vue'
 import api from '@/api/api'
 
@@ -30,153 +31,98 @@ async function login() {
 </script>
 
 <template>
-  <section class="login-page">
-    <div class="login-card">
-      <img src="@/assets/logo_ues.png" alt="Torneo Germans Bisbal" class="login-logo" />
+  <AuthLayout title="Create Account" subtitle="Join the tournament experience">
+    <form @submit.prevent="login" class="register-form">
+      <div class="form-group">
+        <label for="username">Username</label>
 
-      <div class="login-title">
-        <span class="login-kicker">TORNEO</span>
-
-        <h1>
-          GERMANS<br />
-          BISBAL
-        </h1>
-
-        <p class="login-slogan">PASSIÓ PEL RUGBY</p>
+        <input id="username" v-model="username" type="text" />
       </div>
 
-      <form @submit.prevent="login">
-        <div>
-          <label for="username">Username</label>
+      <div class="form-group">
+        <label for="password">Password</label>
 
-          <input id="username" v-model="username" type="text" />
-        </div>
+        <input id="password" v-model="password" type="password" />
+      </div>
 
-        <div>
-          <label for="password">Password</label>
+      <button type="submit" class="register-button">Login</button>
+      <RouterLink to="/" class="guest-link"> Continue as guest </RouterLink>
 
-          <input id="password" v-model="password" type="password" />
-        </div>
+      <RouterLink to="/register" class="register-link"> Create new account </RouterLink>
+    </form>
 
-        <button type="submit">Login</button>
-        <RouterLink to="/" class="guest-link"> Continue as guest </RouterLink>
-
-        <a href="#" class="create-link"> Create new account </a>
-      </form>
-
-      <p v-if="message">
-        {{ message }}
-      </p>
-    </div>
-  </section>
+    <p v-if="message">
+      {{ message }}
+    </p>
+  </AuthLayout>
 </template>
 
 <style scoped>
-.login-page {
-  min-height: 100vh;
-  background-image: url('@/assets/fondo_login.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  display: flex;
-  padding: 24px;
-}
-
-.login-card {
-  width: 100%;
-  max-width: 380px;
-  padding: 02%;
-  text-align: center;
-}
-
-.login-logo {
-  width: 200px;
-  height: 92px;
-  object-fit: contain;
-  margin-bottom: 18px;
-}
-
-.login-kicker {
-  display: block;
-  color: var(--primary);
-  font-weight: 800;
-  letter-spacing: 8px;
-  font-size: 13px;
-  margin-bottom: 6px;
-}
-
-.login-title h1 {
-  color: var(--primary);
-  font-size: 40px;
-  line-height: 0.95;
-  margin: 0;
-  font-weight: 900;
-  letter-spacing: 1px;
-}
-
-.login-slogan {
-  color: var(--primary-light);
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 2px;
-  margin-top: 12px;
-}
-
-.login-card h1 {
-  color: var(--primary);
-  text-transform: uppercase;
-  line-height: 1.05;
-  margin: 0 0 8px;
-  font-size: 34px;
-  letter-spacing: 1px;
-}
-
-.login-card p {
-  color: var(--text-secondary);
-  margin-bottom: 24px;
-}
-
-form {
+.register-form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  text-align: left;
+  gap: 16px;
 }
 
-label {
-  font-weight: 700;
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
   color: var(--primary);
-  font-size: 14px;
+  font-weight: 800;
 }
 
-input {
+.form-group input,
+.password-wrapper input {
   width: 100%;
   padding: 12px;
   border: 1px solid var(--border);
   border-radius: 10px;
-  font-size: 15px;
+  background: white;
+  font-family: inherit;
 }
 
-button {
+.register-button {
+  align-self: center;
   width: 50%;
-  margin-top: 8px;
-  padding: 14px;
+  max-width: 260px;
+  padding: 12px 18px;
   border: none;
-  border-radius: 12px;
+  border-radius: 999px;
   background: var(--primary);
   color: white;
   font-weight: 800;
   cursor: pointer;
-  display: block;
-  margin: auto;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.register-button:hover {
+  background: var(--primary-light);
+  transform: translateY(-2px);
+}
+
+.register-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .guest-link,
-.create-link {
-  display: block;
-  margin-top: 16px;
+.register-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   color: var(--primary);
   font-weight: 600;
   text-decoration: none;
+}
+.guest-link:hover,
+.register-link:hover {
+  color: var(--primary-light);
 }
 </style>

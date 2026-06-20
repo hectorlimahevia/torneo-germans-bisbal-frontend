@@ -36,7 +36,7 @@ onMounted(loadMatches)
 </script>
 
 <template>
-  <section>
+  <section class="principal-section">
     <h2>Matches</h2>
 
     <p v-if="error">
@@ -54,10 +54,16 @@ onMounted(loadMatches)
 </template>
 
 <style scoped>
-section {
+.principal-section {
+  margin-top: 6rem;
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+h2 {
+  color: var(--primary);
+  margin-bottom: 16px;
 }
 
 </style>

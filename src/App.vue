@@ -26,6 +26,7 @@ function handleLogout() {
 </script>
 
 <template>
+  <div class="app">
   <header class="app-header">
     <button class="menu-button" :class="{ open: isMenuOpen }" type="button" @click="toggleMenu">
       {{ isMenuOpen ? '✕' : '☰' }}
@@ -62,11 +63,23 @@ function handleLogout() {
 
   <AiChatWidget v-if="isAuthenticated" />
 
-  <AppFooter v-if="$route.name !== 'login'" />
+  <AppFooter  />
   <ToastContainer />
+  </div>
 </template>
 
 <style scoped>
+.app {
+  margin-top: 3rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-main {
+  flex: 1;
+}
+
 .page-container {
   padding-inline: 16px;
   padding-bottom: 10px;
@@ -131,10 +144,7 @@ function handleLogout() {
   background: rgba(255, 255, 255, 0.12);
 }
 
-.app-main {
-  min-height: 100vh;
-  padding-top: 72px;
-}
+
 
 .user-badge {
   position: fixed;

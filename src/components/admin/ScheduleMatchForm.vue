@@ -180,11 +180,7 @@ watch(
   display: flex;
   flex-direction: column;
   gap: 16px;
-
   background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
   padding: 16px;
 }
 .form-group {
